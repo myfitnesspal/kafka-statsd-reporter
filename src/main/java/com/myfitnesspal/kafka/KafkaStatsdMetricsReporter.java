@@ -99,5 +99,5 @@ public class KafkaStatsdMetricsReporter implements KafkaMetricsReporter,
                 LOG.debug("StatsdReporter started.");
             }
         }
-	}
+    }
 }

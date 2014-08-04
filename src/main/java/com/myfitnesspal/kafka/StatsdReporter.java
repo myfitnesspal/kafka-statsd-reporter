@@ -355,11 +355,11 @@ public class StatsdReporter extends AbstractPollingReporter implements MetricPro
 	@Override
 	public void processMeter(MetricName name, Metered meter, Long epoch) throws IOException {
 		final String sanitizedName = sanitizeName(name);
-		sendStatsd(sanitizedName + "." + "count", format(meter.count()), StatType.GAUGE);
-		sendStatsd(sanitizedName + "." + "m1_rate", format(meter.oneMinuteRate()), StatType.TIMER);
-		sendStatsd(sanitizedName + "." + "m5_rate", format(meter.fiveMinuteRate()), StatType.TIMER);
-		sendStatsd(sanitizedName + "." + "m15_rate", format(meter.fifteenMinuteRate()), StatType.TIMER);
-		sendStatsd(sanitizedName + "." + "mean_rate", format(meter.meanRate()), StatType.TIMER);
+		sendStatsd(sanitizedName + ".count", format(meter.count()), StatType.GAUGE);
+		sendStatsd(sanitizedName + ".m1_rate", format(meter.oneMinuteRate()), StatType.TIMER);
+		sendStatsd(sanitizedName + ".m5_rate", format(meter.fiveMinuteRate()), StatType.TIMER);
+		sendStatsd(sanitizedName + ".m15_rate", format(meter.fifteenMinuteRate()), StatType.TIMER);
+		sendStatsd(sanitizedName + ".mean_rate", format(meter.meanRate()), StatType.TIMER);
 	}
 
 	@Override
@@ -378,21 +378,21 @@ public class StatsdReporter extends AbstractPollingReporter implements MetricPro
 	}
 
 	protected void sendSummarizable(String sanitizedName, Summarizable metric) throws IOException {
-		sendStatsd(sanitizedName + "." + "count", format(metric.sum()), StatType.GAUGE);
-		sendStatsd(sanitizedName + "." + "max", format(metric.max()), StatType.TIMER);
-		sendStatsd(sanitizedName + "." + "mean", format(metric.mean()), StatType.TIMER);
-		sendStatsd(sanitizedName + "." + "min", format(metric.min()), StatType.TIMER);
-		sendStatsd(sanitizedName + "." + "stddev", format(metric.stdDev()), StatType.TIMER);
+		sendStatsd(sanitizedName + ".count", format(metric.sum()), StatType.GAUGE);
+		sendStatsd(sanitizedName + ".max", format(metric.max()), StatType.TIMER);
+		sendStatsd(sanitizedName + ".mean", format(metric.mean()), StatType.TIMER);
+		sendStatsd(sanitizedName + ".min", format(metric.min()), StatType.TIMER);
+		sendStatsd(sanitizedName + ".stddev", format(metric.stdDev()), StatType.TIMER);
 	}
 
 	protected void sendSampling(String sanitizedName, Sampling metric) throws IOException {
 		final Snapshot snapshot = metric.getSnapshot();
-		sendStatsd(sanitizedName + "." + "p50", format(snapshot.getMedian()), StatType.TIMER);
-		sendStatsd(sanitizedName + "." + "p75", format(snapshot.get75thPercentile()), StatType.TIMER);
-		sendStatsd(sanitizedName + "." + "p95", format(snapshot.get95thPercentile()), StatType.TIMER);
-		sendStatsd(sanitizedName + "." + "p98", format(snapshot.get98thPercentile()), StatType.TIMER);
-		sendStatsd(sanitizedName + "." + "p99", format(snapshot.get99thPercentile()), StatType.TIMER);
-		sendStatsd(sanitizedName + "." + "p999", format(snapshot.get999thPercentile()), StatType.TIMER);
+		sendStatsd(sanitizedName + ".p50", format(snapshot.getMedian()), StatType.TIMER);
+		sendStatsd(sanitizedName + ".p75", format(snapshot.get75thPercentile()), StatType.TIMER);
+		sendStatsd(sanitizedName + ".p95", format(snapshot.get95thPercentile()), StatType.TIMER);
+		sendStatsd(sanitizedName + ".p98", format(snapshot.get98thPercentile()), StatType.TIMER);
+		sendStatsd(sanitizedName + ".p99", format(snapshot.get99thPercentile()), StatType.TIMER);
+		sendStatsd(sanitizedName + ".p999", format(snapshot.get999thPercentile()), StatType.TIMER);
 	}
 
 	protected void printVmMetrics(long epoch) throws IOException {
