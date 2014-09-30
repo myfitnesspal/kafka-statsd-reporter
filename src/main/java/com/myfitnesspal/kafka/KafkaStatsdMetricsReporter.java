@@ -71,9 +71,9 @@ public class KafkaStatsdMetricsReporter implements KafkaMetricsReporter,
 	public synchronized void init(VerifiableProperties props) {
 		if (!initialized) {
 			KafkaMetricsConfig metricsConfig = new KafkaMetricsConfig(props);
-			statsdHost = props.getString("kafka.statsd.metrics.host", STATSD_DEFAULT_HOST);
+			statsdHost = props.getString("kafka.statsd.metrics.host", STATSD_DEFAULT_HOST).trim();
 			statsdPort = props.getInt("kafka.statsd.metrics.port", STATSD_DEFAULT_PORT);
-			statsdGroupPrefix = props.getString("kafka.statsd.metrics.group", STATSD_DEFAULT_PREFIX);
+			statsdGroupPrefix = props.getString("kafka.statsd.metrics.group", STATSD_DEFAULT_PREFIX).trim();
             String regex = props.getString("kafka.statsd.metrics.exclude.regex", null);
 
             LOG.debug("Initialize StatsdReporter ["+statsdHost+","+statsdPort+","+statsdGroupPrefix+"]");

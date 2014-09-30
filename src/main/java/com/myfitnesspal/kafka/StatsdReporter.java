@@ -8,6 +8,7 @@ import java.util.SortedMap;
 import java.util.concurrent.TimeUnit;
 import java.nio.ByteBuffer;
 import java.nio.channels.DatagramChannel;
+import java.nio.charset.Charset;
 
 import com.yammer.metrics.Metrics;
 import com.yammer.metrics.core.*;
@@ -462,27 +463,22 @@ public class StatsdReporter extends AbstractPollingReporter implements MetricPro
 		}
 
 		public void doSend(String stats) {
-			try {
-				final byte[] data = stats.getBytes("utf-8");
+			final byte[] data = stats.getBytes(Charset.forName("UTF-8"));
 
-				// If we're going to go past the threshold of the buffer then
-				// flush.
-				// the +1 is for the potential '\n' in multi_metrics below
-				if (sendBuffer.remaining() < (data.length + 1)) {
-					flush();
-				}
-
-				// multiple metrics are separated by '\n'
-				if (sendBuffer.position() > 0) {
-					sendBuffer.put("\n".getBytes());
-				}
-
-				// append the data
-				sendBuffer.put(data);
-			} catch (IOException e) {
-				LOG.error("Could not send stat :" + sendBuffer.toString() + " to host " + address.getHostName() + " : "
-						+ address.getPort(), e);
+			// If we're going to go past the threshold of the buffer then
+			// flush.
+			// the +1 is for the potential '\n' in multi_metrics below
+			if (sendBuffer.remaining() < (data.length + 1)) {
+				flush();
 			}
+
+			// multiple metrics are separated by '\n'
+			if (sendBuffer.position() > 0) {
+				sendBuffer.put("\n".getBytes(Charset.forName("UTF-8")));
+			}
+
+			// append the data
+			sendBuffer.put(data);
 		}
 
 		private void flush() {
@@ -496,17 +492,20 @@ public class StatsdReporter extends AbstractPollingReporter implements MetricPro
 				// send and reset the buffer
 				sendBuffer.flip();
 				int nbSentBytes = channel.send(sendBuffer, address);
-				sendBuffer.limit(sendBuffer.capacity());
-				sendBuffer.rewind();
-
+				LOG.debug("Send entirely stat :" + new String(sendBuffer.array(), Charset.forName("UTF-8")) + " to host "
+						+ address.getHostName() + " : " + address.getPort());
 				if (sizeOfBuffer != nbSentBytes) {
-					LOG.error("Could not send entirely stat :" + sendBuffer.toString() + " to host "
+					LOG.error("Could not send entirely stat (" + sendBuffer.toString() + ") : "
+							+  new String(sendBuffer.array(), Charset.forName("UTF-8")) + " to host "
 							+ address.getHostName() + " : " + address.getPort() + ". Only sent " + nbSentBytes
 							+ " out of " + sizeOfBuffer);
 				}
+				sendBuffer.limit(sendBuffer.capacity());
+				sendBuffer.rewind();
 			} catch (IOException e) {
-				LOG.error("Could not send stat :" + sendBuffer.toString() + " to host " + address.getHostName() + " : "
-						+ address.getPort(), e);
+				LOG.error("Could not send entirely stat (" + sendBuffer.toString() + ") : "
+						+  new String(sendBuffer.array(), Charset.forName("UTF-8")) + " to host "
+						+ address.getHostName() + " : "	+ address.getPort(), e);
 			}
 		}
 	}
