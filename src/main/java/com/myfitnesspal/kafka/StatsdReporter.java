@@ -270,13 +270,14 @@ public class StatsdReporter extends AbstractPollingReporter implements MetricPro
 	@Override
 	public void run() {
 		try {
-			statsdClient = new StatsdClient(host, port, 5120);
+			if (statsdClient == null) {
+				statsdClient = new StatsdClient(host, port, 5120);
+			}
 			final long epoch = clock.time() / 1000;
 			if (this.printVMMetrics) {
 				printVmMetrics(epoch);
 			}
 			printRegularMetrics(epoch);
-			statsdClient.close();
 		} catch (Exception e) {
 			if (LOG.isDebugEnabled()) {
 				LOG.debug("Error writing to Statsd", e);
@@ -285,6 +286,17 @@ public class StatsdReporter extends AbstractPollingReporter implements MetricPro
 			}
 		} finally {
 
+		}
+	}
+
+	@Override
+	public void shutdown() {
+		try {
+			if (statsdClient != null) {
+				statsdClient.close();
+			}
+		} catch (IOException ioe) {
+			LOG.error("Fail to shutdown statsdClient", ioe);
 		}
 	}
 
