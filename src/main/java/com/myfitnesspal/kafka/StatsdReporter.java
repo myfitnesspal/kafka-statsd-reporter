@@ -33,7 +33,7 @@ public class StatsdReporter extends AbstractPollingReporter implements MetricPro
 	private static enum StatType {
 		COUNTER, TIMER, GAUGE
 	}
-
+    private static final int STATSD_BUFFER = 512;
 	protected final String prefix;
 	protected final MetricPredicate predicate;
 	protected final Locale locale = Locale.US;
@@ -272,7 +272,7 @@ public class StatsdReporter extends AbstractPollingReporter implements MetricPro
 	public void run() {
 		try {
 			if (statsdClient == null) {
-				statsdClient = new StatsdClient(host, port, 5120);
+				statsdClient = new StatsdClient(host, port, STATSD_BUFFER);
 			}
 			final long epoch = clock.time() / 1000;
 			if (this.printVMMetrics) {
