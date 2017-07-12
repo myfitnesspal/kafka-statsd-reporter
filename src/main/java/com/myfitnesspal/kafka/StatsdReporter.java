@@ -314,7 +314,7 @@ public class StatsdReporter extends AbstractPollingReporter implements MetricPro
 			statTypeStr = "ms";
 			break;
 		}
-		final String messageFormat = "%s%s:%s|%s\n";
+		final String messageFormat = "%s%s:%s|%s";
 		statsdClient.doSend(String.format(locale, messageFormat, prefix, sanitizeString(name), value, statTypeStr));
 	}
 
