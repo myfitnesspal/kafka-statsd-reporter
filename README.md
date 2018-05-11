@@ -28,6 +28,8 @@ Here is a list of default properties used:
     # since kafka has quite a lot of metrics, it is useful
     # if you have many topics/partitions.
     kafka.statsd.metrics.exclude.regex=<not set>
+    # Environments with frequent IP address changes (AWS) might not want to re-use the Statsd client between runs
+    kafka.statsd.metrics.client.reuse=true
 
 Usage As Lib
 -----------
