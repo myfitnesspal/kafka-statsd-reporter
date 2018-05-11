@@ -40,6 +40,7 @@ public class StatsdReporter extends AbstractPollingReporter implements MetricPro
 	protected final Clock clock;
 	protected final String host;
 	protected final int port;
+	private boolean reuseStatsdClient = true;
 	protected final VirtualMachineMetrics vm;
 	protected StatsdClient statsdClient;
 	public boolean printVMMetrics = true;
@@ -271,7 +272,7 @@ public class StatsdReporter extends AbstractPollingReporter implements MetricPro
 	@Override
 	public void run() {
 		try {
-			if (statsdClient == null) {
+			if (statsdClient == null || reuseStatsdClient == false) {
 				statsdClient = new StatsdClient(host, port, STATSD_BUFFER);
 			}
 			final long epoch = clock.time() / 1000;
@@ -437,6 +438,10 @@ public class StatsdReporter extends AbstractPollingReporter implements MetricPro
 
 	private String format(double v) {
 		return String.format(locale, "%2.2f", v);
+	}
+
+	public void setReuseStatsdClient(boolean reuseStatsdClient) {
+		this.reuseStatsdClient = reuseStatsdClient;
 	}
 
 	private class StatsdClient {

@@ -75,6 +75,8 @@ public class KafkaStatsdMetricsReporter implements KafkaMetricsReporter,
 			statsdPort = props.getInt("kafka.statsd.metrics.port", STATSD_DEFAULT_PORT);
 			statsdGroupPrefix = props.getString("kafka.statsd.metrics.group", STATSD_DEFAULT_PREFIX).trim();
             String regex = props.getString("kafka.statsd.metrics.exclude.regex", null);
+			boolean reuseStatsdClient = props.getBoolean("kafka.statsd.metrics.client.reuse", true);
+
 
             LOG.debug("Initialize StatsdReporter ["+statsdHost+","+statsdPort+","+statsdGroupPrefix+"]");
 
@@ -90,6 +92,7 @@ public class KafkaStatsdMetricsReporter implements KafkaMetricsReporter,
             			statsdPort,
             			Clock.defaultClock()
             			);
+            	reporter.setReuseStatsdClient(reuseStatsdClient);
             } catch (IOException e) {
             	LOG.error("Unable to initialize StatsdReporter", e);
             }
